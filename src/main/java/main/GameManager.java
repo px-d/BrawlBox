@@ -114,8 +114,11 @@ public class GameManager {
                     if (lobbyTime == 0) {
                         state = State.PREP;
                         teleportPlayers();
-                    } else if (players.size() >= min_players) {
+                    }
+                    if (players.size() >= min_players) {
                         lobbyTime--;
+                    } else {
+                        lobbyTime = 20;
                     }
                 }
 
