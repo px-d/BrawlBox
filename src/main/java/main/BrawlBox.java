@@ -2,6 +2,7 @@ package main;
 
 import events.GeneralEvents;
 import events.JoinQuitEvent;
+import exec.PauseExec;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -23,6 +24,7 @@ public class BrawlBox extends JavaPlugin {
         inventoryManager = new InventoryManager(this);
         inventoryManager.init();
         registerEvents();
+        registerCommands();
     }
 
     @Override
@@ -38,4 +40,12 @@ public class BrawlBox extends JavaPlugin {
         pluginManager.registerEvents(new JoinQuitEvent(), this);
         pluginManager.registerEvents(new GeneralEvents(), this);
     }
+
+    /**
+     * Register all commands for BrawlBox
+     */
+    private void registerCommands(){
+        getCommand("pause").setExecutor(new PauseExec());
+    }
+
 }

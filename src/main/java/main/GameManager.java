@@ -41,6 +41,9 @@ public class GameManager {
         run();
     }
 
+    /**
+     * @param p The Player you want to register
+     */
     public void registerPlayer(Player p) {
         p.getInventory().clear();
         heal(p);
@@ -55,6 +58,9 @@ public class GameManager {
         p.getInventory().setItem(4, new ItemBuilder(Material.CHEST).name(ValueHolder.tacc("&aTeamselector &7(Rightclick)")).build());
     }
 
+    /**
+     * @param p The Player you want to un-register
+     */
     public void unregisterPlayer(Player p) {
         players.remove(p.getUniqueId());
         FastBoard board = boards.remove(p.getUniqueId());
@@ -63,6 +69,9 @@ public class GameManager {
         }
     }
 
+    /**
+     * Update all scoreboards depending on the state of the game
+     */
     public void updateBoards() {
         int missing_players = min_players - Bukkit.getOnlinePlayers().size();
         for (FastBoard b : boards.values()) {
@@ -94,7 +103,9 @@ public class GameManager {
         }
     }
 
-
+    /**
+     * Default RUN METHOD
+     */
     private void run() {
         Bukkit.getScheduler().runTaskTimer(BrawlBox.INSTANCE, e -> {
             if (pause == false) {
@@ -123,6 +134,9 @@ public class GameManager {
         }, 0, 20);
     }
 
+    /**
+     * @param p The Player you want to reset all default attributes
+     */
     public void heal(Player p) {
         p.setHealth(20.0);
         p.setFoodLevel(20);
@@ -130,6 +144,9 @@ public class GameManager {
         p.setExp(0);
     }
 
+    /**
+     * @return A list of all Players of the RED TEAM
+     */
     public List<String> getRedPlayers() {
         List<String> redPl = new ArrayList<>();
 
@@ -142,6 +159,9 @@ public class GameManager {
         return redPl;
     }
 
+    /**
+     * @return A list of all Players of the BLUE TEAM
+     */
     public List<String> getBluePlayers() {
         List<String> bluePl = new ArrayList<>();
 
@@ -154,6 +174,9 @@ public class GameManager {
         return bluePl;
     }
 
+    /**
+     * Teleport all Players to their respective team
+     */
     private void teleportPlayers() {
         for (Brawler b : players.values()) {
             if (b.getTeam() == Teams.NONE) {
