@@ -1,0 +1,5 @@
+name: BrawlBox
+main: main.BrawlBox
+version: 0.1-ALPHA
+author: soho030
+api-version: 1.16
