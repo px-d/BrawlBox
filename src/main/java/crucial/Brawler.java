@@ -2,6 +2,7 @@ package crucial;
 
 import enums.Teams;
 import main.BrawlBox;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import util.ValueHolder;
 
@@ -13,6 +14,7 @@ public class Brawler {
 
     private Teams team = Teams.NONE;
 
+    public boolean isAlive = true;
 
     public Brawler(Player player) {
         this.player = player;
@@ -55,5 +57,23 @@ public class Brawler {
 
     public void addCoins(int amount) {
         this.coins += amount;
+    }
+
+    public void kill() {
+        player.getInventory().clear();
+        isAlive = false;
+
+        switch (team){
+            case BLUE:
+                player.teleport(ValueHolder.blue_prep);
+                break;
+            case RED:
+                player.teleport(ValueHolder.red_prep);
+                break;
+            default:
+                Bukkit.broadcastMessage(ValueHolder.tacc("&cERROR CODE 003"));
+                break;
+        }
+
     }
 }

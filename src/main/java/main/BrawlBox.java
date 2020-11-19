@@ -1,5 +1,6 @@
 package main;
 
+import events.AxeEvents;
 import events.CombatEvents;
 import events.GeneralEvents;
 import events.JoinQuitEvent;
@@ -44,6 +45,7 @@ public class BrawlBox extends JavaPlugin {
         pluginManager.registerEvents(new JoinQuitEvent(), this);
         pluginManager.registerEvents(new GeneralEvents(), this);
         pluginManager.registerEvents(new CombatEvents(), this);
+        pluginManager.registerEvents(new AxeEvents(), this);
     }
 
     /**

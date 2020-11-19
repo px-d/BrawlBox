@@ -1,12 +1,10 @@
 package events;
 
+import crucial.Brawler;
 import enums.State;
 import guis.TeamGUI;
 import main.BrawlBox;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.Particle;
-import org.bukkit.Sound;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -18,12 +16,19 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import util.ValueHolder;
 
 public class GeneralEvents implements Listener {
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
+
+        if(e.getBlockAgainst().getType() != Material.SEA_LANTERN && e.getBlock().getType().toString().contains("CONCRETE")){
+            e.setCancelled(true);
+            e.getPlayer().sendMessage("Only placeable in the middle.");
+        }
+
         if (BrawlBox.gm.state == State.PREP) {
             e.setCancelled(true);
         } else {
@@ -53,10 +58,11 @@ public class GeneralEvents implements Listener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
-        if (BrawlBox.gm.state != State.GAME)
+        if (BrawlBox.gm.state != State.GAME){
             if (e.getEntity() instanceof Player) {
                 e.setDamage(0);
             }
+        }
     }
 
 
@@ -91,7 +97,21 @@ public class GeneralEvents implements Listener {
     public void onDrop(PlayerDropItemEvent e) {
         if (e.getPlayer().getGameMode() != GameMode.CREATIVE)
             e.setCancelled(true);
+    }
 
+    @EventHandler
+    public void onMove(PlayerMoveEvent e) {
+        Location from = e.getFrom();
+        Location to = e.getTo();
+        double x = Math.floor(from.getX());
+        double z = Math.floor(from.getZ());
+        assert to != null;
+        if (Math.floor(to.getX()) != x || Math.floor(to.getZ()) != z) {
+            if(e.getPlayer().getLocation().getBlock().getType() == Material.WATER){
+                Brawler b = BrawlBox.gm.players.get(e.getPlayer().getUniqueId());
+                b.kill();
+            }
+        }
     }
 
 

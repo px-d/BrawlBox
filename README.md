@@ -8,3 +8,7 @@ Error Codes:
 > 001 = A Player without a Team has been found during teleporting _(Lobby to Prep)_
 
 > 002 = A Player without a Team has been found during teleporting _(Prep to Game)_
+
+> 003 = A Player died without being assigned to a team.
+
+> 004 = Something went wrong with alive & dead players. Somehow all players are dead.

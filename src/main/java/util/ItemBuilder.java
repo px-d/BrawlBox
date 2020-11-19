@@ -90,7 +90,7 @@ public class ItemBuilder {
 	}
 
 	public ItemBuilder name(String name) {
-		meta.setDisplayName(name);
+		meta.setDisplayName(ValueHolder.tacc(name));
 		return this;
 	}
 

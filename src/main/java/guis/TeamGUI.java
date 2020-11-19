@@ -2,7 +2,6 @@ package guis;
 
 import enums.Teams;
 import main.BrawlBox;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import util.ItemBuilder;
@@ -15,7 +14,7 @@ import util.inventory.content.InventoryProvider;
 public class TeamGUI implements InventoryProvider {
 
     public static final SmartInventory INVENTORY = SmartInventory.builder().id("teamSelect").provider(new TeamGUI())
-            .size(3, 9).title("" + ValueHolder.tacc("&9Kits:"))
+            .size(3, 9).title("" + ValueHolder.tacc("&9Teams:"))
             .manager(BrawlBox.INSTANCE.inventoryManager).closeable(true).build();
 
     @Override
@@ -31,7 +30,7 @@ public class TeamGUI implements InventoryProvider {
             return;
         }
         //JOIN RED TEAM IF FAIR ENOUGH
-        contents.set(1, 2, ClickableItem.of(new ItemBuilder(Material.RED_WOOL).name(ValueHolder.tacc("&cTeam Red")).lore(BrawlBox.gm.getRedPlayers()).build(), e -> {
+        contents.set(1, 2, ClickableItem.of(new ItemBuilder(Material.RED_WOOL).name("&cTeam Red").lore(BrawlBox.gm.getRedPlayers()).build(), e -> {
 
             if (BrawlBox.gm.players.get(player.getUniqueId()).getTeam() == Teams.RED) {
                 player.sendMessage(ValueHolder.prefix + ValueHolder.tacc("&cYou are already in that team."));
@@ -56,7 +55,7 @@ public class TeamGUI implements InventoryProvider {
         }));
 
         //JOIN BLUE TEAM IF FAIR ENOUGH
-        contents.set(1, 6, ClickableItem.of(new ItemBuilder(Material.BLUE_WOOL).name(ValueHolder.tacc("&9Team Blue")).lore(BrawlBox.gm.getBluePlayers()).build(), e -> {
+        contents.set(1, 6, ClickableItem.of(new ItemBuilder(Material.BLUE_WOOL).name("&9Team Blue").lore(BrawlBox.gm.getBluePlayers()).build(), e -> {
             if (BrawlBox.gm.players.get(player.getUniqueId()).getTeam() == Teams.BLUE) {
                 player.sendMessage(ValueHolder.prefix + ValueHolder.tacc("&cYou are already in that team."));
             } else if (BrawlBox.gm.getBluePlayers().size() < 3) {
