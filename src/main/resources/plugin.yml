@@ -8,3 +8,6 @@ commands:
   freeze:
     description: Pauses the Timer for easier debugging
     usage: /pause
+  i:
+    description: gives you an item
+    usage: /i [item]

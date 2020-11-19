@@ -1,14 +1,18 @@
 package main;
 
+import events.CombatEvents;
 import events.GeneralEvents;
 import events.JoinQuitEvent;
 import exec.FreezeExec;
+import exec.IExec;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
 import util.inventory.InventoryManager;
+
+import java.util.Objects;
 
 public class BrawlBox extends JavaPlugin {
 
@@ -39,13 +43,15 @@ public class BrawlBox extends JavaPlugin {
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new JoinQuitEvent(), this);
         pluginManager.registerEvents(new GeneralEvents(), this);
+        pluginManager.registerEvents(new CombatEvents(), this);
     }
 
     /**
      * Register all commands for BrawlBox
      */
-    private void registerCommands(){
-        getCommand("freeze").setExecutor(new FreezeExec());
+    private void registerCommands() {
+        Objects.requireNonNull(getCommand("freeze")).setExecutor(new FreezeExec());
+        Objects.requireNonNull(getCommand("i")).setExecutor(new IExec());
     }
 
 }

@@ -46,7 +46,7 @@ public class TeamGUI implements InventoryProvider {
                     if (BrawlBox.gm.players.get(player.getUniqueId()).getTeam() == Teams.BLUE) {
                         player.sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aPlease stay in &9Blue Team &afor fairness sake."));
                     } else {
-                        player.sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aPlease join &cRed Team &afor fairness sake."));
+                        player.sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aPlease join &9Blue Team &afor fairness sake."));
                     }
                 }
             } else {

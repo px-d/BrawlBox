@@ -34,10 +34,13 @@ public class GeneralEvents implements Listener {
 
     @EventHandler
     public void onBreak(BlockBreakEvent e) {
+        if (e.getBlock().getType().toString().contains("CONCRETE")) {
+            return;
+        }
         if (!BrawlBox.gm.placedBlocks.contains(e.getBlock().getLocation())) {
             e.setCancelled(true);
             if (BrawlBox.gm.state == State.GAME) {
-                e.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&cDu darfst hier nicht abbauen!"));
+                e.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&cYou're not allowed to mine this!"));
             }
 
             e.getBlock().getWorld().spawnParticle(Particle.SPELL, e.getBlock().getLocation().add(0.5, 0.2, 0.5), 10);
@@ -52,7 +55,7 @@ public class GeneralEvents implements Listener {
     public void onDamage(EntityDamageEvent e) {
         if (BrawlBox.gm.state != State.GAME)
             if (e.getEntity() instanceof Player) {
-                e.setCancelled(true);
+                e.setDamage(0);
             }
     }
 

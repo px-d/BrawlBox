@@ -9,7 +9,7 @@ public class Brawler {
 
     private Player player;
     private int kills = 0;
-    private double coins = 300.0;
+    private int coins = 300;
 
     private Teams team = Teams.NONE;
 
@@ -37,7 +37,7 @@ public class Brawler {
         return player;
     }
 
-    public double getCoins() {
+    public int getCoins() {
         return coins;
     }
 
@@ -47,5 +47,13 @@ public class Brawler {
 
     public void setTeam(Teams red) {
         this.team = red;
+    }
+
+    public void addKill() {
+        this.kills += 1;
+    }
+
+    public void addCoins(int amount) {
+        this.coins += amount;
     }
 }
