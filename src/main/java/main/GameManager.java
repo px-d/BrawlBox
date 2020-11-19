@@ -96,9 +96,8 @@ public class GameManager {
                         "Team: " + brawler.getStringTeam(),
                         "Prep: " + preptime,
                         "",
-                        "Coins: " + ValueHolder.tacc("&6" + brawler.getCoins() + "$"),
-                        "",
-                        "Starting in: " + lobbyTime));
+                        "Coins: " + ValueHolder.tacc("&6" + brawler.getCoins() + "$")
+                ));
             }
         }
     }
@@ -113,7 +112,7 @@ public class GameManager {
                 if (state == State.LOBBY) {
                     if (lobbyTime == 0) {
                         state = State.PREP;
-                        teleportPlayers();
+                        tpToPrep();
                     }
                     if (players.size() >= min_players) {
                         lobbyTime--;
@@ -123,7 +122,11 @@ public class GameManager {
                 }
 
                 if (state == State.PREP) {
+                    if (preptime > 0) {
+                        preptime--;
+                    } else {
 
+                    }
                 }
 
                 if (state == State.GAME) {
@@ -180,12 +183,12 @@ public class GameManager {
     /**
      * Teleport all Players to their respective team
      */
-    private void teleportPlayers() {
+    private void tpToPrep() {
         for (Brawler b : players.values()) {
             if (b.getTeam() == Teams.NONE) {
                 if (getBluePlayers().size() == 3 && getRedPlayers().size() == 3) {
                     pause = true;
-                    Bukkit.broadcastMessage(ValueHolder.tacc("&cGame has been paused due to an error."));
+                    Bukkit.broadcastMessage(ValueHolder.tacc("&cGame has been paused due to an error. (ERROR CODE 000)"));
                     return;
                 }
 
@@ -198,13 +201,26 @@ public class GameManager {
         }
 
         for (Brawler b : players.values()) {
+            b.getPlayer().getInventory().clear();
             if (b.getTeam() == Teams.RED) {
                 b.getPlayer().teleport(ValueHolder.red_prep);
             } else if (b.getTeam() == Teams.BLUE) {
                 b.getPlayer().teleport(ValueHolder.blue_prep);
             } else {
-                b.getPlayer().sendMessage(ValueHolder.tacc("&cSomething went wrong. Please contact an Admin."));
-                b.getPlayer().kickPlayer("Something went wrong. Please contact an admin.");
+                b.getPlayer().sendMessage(ValueHolder.tacc("&cSomething went wrong. Please contact an Admin. (ERROR CODE 001)"));
+                b.getPlayer().kickPlayer("Something went wrong. Please contact an admin. (ERROR CODE 001)");
+            }
+        }
+    }
+
+    private void tpToArena() {
+        for (Brawler b : players.values()) {
+            if (b.getTeam() == Teams.RED) {
+                b.getPlayer().teleport(ValueHolder.red_spawn);
+            }else if(b.getTeam() == Teams.BLUE){
+                b.getPlayer().teleport(ValueHolder.blue_spawn);
+            }else{
+                Bukkit.broadcastMessage("ERROR CODE 002");
             }
         }
     }
