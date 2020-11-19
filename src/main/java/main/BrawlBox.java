@@ -2,7 +2,7 @@ package main;
 
 import events.GeneralEvents;
 import events.JoinQuitEvent;
-import exec.PauseExec;
+import exec.FreezeExec;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -45,7 +45,7 @@ public class BrawlBox extends JavaPlugin {
      * Register all commands for BrawlBox
      */
     private void registerCommands(){
-        getCommand("pause").setExecutor(new PauseExec());
+        getCommand("freeze").setExecutor(new FreezeExec());
     }
 
 }
