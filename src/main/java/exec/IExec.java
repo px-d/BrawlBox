@@ -16,28 +16,26 @@ public class IExec implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
         if (sender instanceof Player) {
-            if (args.length == 1) {
-
-                Material m;
-
-                try {
-                    m = Material.valueOf(args[0]);
-                    ((Player) sender).getInventory().addItem(new ItemStack(m));
-                } catch (Exception e) {
-                    sender.sendMessage("INVALID NAME");
-                }
-
-
-            } else if (args.length == 2) {
-                if (StringUtils.isNumeric(args[1])) {
+            if(sender.isOp()){
+                if (args.length == 1) {
                     Material m;
                     try {
-                        m = Material.valueOf(args[0]);
-                        ((Player) sender).getInventory().addItem(new ItemStack(m, Math.min(Integer.parseInt(args[1]), 64)));
+                        m = Material.valueOf(args[0].toUpperCase());
+                        ((Player) sender).getInventory().addItem(new ItemStack(m));
                     } catch (Exception e) {
                         sender.sendMessage("INVALID NAME");
                     }
+                } else if (args.length == 2) {
+                    if (StringUtils.isNumeric(args[1])) {
+                        Material m;
+                        try {
+                            m = Material.valueOf(args[0].toUpperCase());
+                            ((Player) sender).getInventory().addItem(new ItemStack(m, Math.min(Integer.parseInt(args[1]), 64)));
+                        } catch (Exception e) {
+                            sender.sendMessage("INVALID NAME");
+                        }
 
+                    }
                 }
             }
         }

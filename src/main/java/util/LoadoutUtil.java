@@ -2,6 +2,7 @@ package util;
 
 import org.bukkit.Color;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -11,9 +12,10 @@ public class LoadoutUtil {
 
 
     public static void redLoadout(Player p) {
-
         ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         ItemStack pick = new ItemBuilder(Material.WOODEN_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
+        pick.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        pick.getItemMeta().setUnbreakable(true);
         ItemStack blocks = new ItemBuilder(Material.RED_CONCRETE).amount(9).build();
 
         ItemStack helmet = new ItemBuilder(Material.LEATHER_HELMET).build();
@@ -45,9 +47,10 @@ public class LoadoutUtil {
     }
 
     public static void blueLoadout(Player p) {
-
         ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         ItemStack pick = new ItemBuilder(Material.WOODEN_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
+        pick.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        pick.getItemMeta().setUnbreakable(true);
         ItemStack blocks = new ItemBuilder(Material.BLUE_CONCRETE).amount(9).build();
 
         ItemStack helmet = new ItemBuilder(Material.LEATHER_HELMET).build();

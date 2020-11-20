@@ -7,10 +7,14 @@ import org.bukkit.entity.Player;
 
 public class ActionBarAPI {
 
-    public static void sendABToAll(String msg){
-        for(Player p : Bukkit.getOnlinePlayers()){
+    public static void sendABToAll(String msg) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
             p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ValueHolder.tacc(msg)));
         }
+    }
+
+    public static void abToPlayer(String msg, Player p) {
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ValueHolder.tacc(msg)));
     }
 
 }

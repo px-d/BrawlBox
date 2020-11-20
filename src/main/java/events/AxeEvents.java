@@ -1,6 +1,8 @@
 package events;
 
+import enums.State;
 import main.BrawlBox;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -16,7 +18,6 @@ import org.bukkit.util.EulerAngle;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class AxeEvents implements Listener {
 
@@ -35,21 +36,31 @@ public class AxeEvents implements Listener {
 
     @EventHandler
     public void axeThrow(final PlayerInteractEvent event) {
+
+        if (BrawlBox.gm.state != State.GAME) {
+            return;
+        }
+
         if (event.getAction() == Action.RIGHT_CLICK_AIR && event.getItem() != null && (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.WOODEN_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.STONE_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.IRON_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.DIAMOND_AXE) && (event.getItem().getType() == Material.WOODEN_AXE || event.getItem().getType() == Material.STONE_AXE || event.getItem().getType() == Material.GOLDEN_AXE || event.getItem().getType() == Material.IRON_AXE || event.getItem().getType() == Material.DIAMOND_AXE)) {
+            event.setCancelled(true);
             final Player p = event.getPlayer();
             final Vector v = p.getLocation().add(p.getLocation().getDirection().multiply(10)).toVector().subtract(p.getLocation().toVector()).normalize();
             p.getInventory().removeItem(p.getInventory().getItem(p.getInventory().getHeldItemSlot()));
-            this.axe(p, v, event.getItem());
+            this.axe((Entity) p, v, event.getItem());
         }
     }
 
     @EventHandler
     public void axeThrow2(final PlayerInteractEntityEvent event) {
-        event.getPlayer().getInventory().getItemInMainHand();
+
+        if (BrawlBox.gm.state != State.GAME) {
+            return;
+        }
+
         if (event.getPlayer().getInventory().getItemInMainHand().getType() == Material.WOODEN_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.STONE_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.GOLDEN_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.IRON_AXE || event.getPlayer().getInventory().getItemInMainHand().getType() == Material.DIAMOND_AXE) {
             final Player p = event.getPlayer();
             final Vector v = p.getLocation().add(p.getLocation().getDirection().multiply(10)).toVector().subtract(p.getLocation().toVector()).normalize();
-            this.axe(p, v, event.getPlayer().getInventory().getItemInMainHand());
+            this.axe((Entity) p, v, event.getPlayer().getInventory().getItemInMainHand());
             p.getInventory().removeItem(p.getInventory().getItem(p.getInventory().getHeldItemSlot()));
         }
     }
@@ -59,14 +70,14 @@ public class AxeEvents implements Listener {
         final ArmorStand a = (ArmorStand) e.getWorld().spawnEntity(to, EntityType.ARMOR_STAND);
         a.setVisible(false);
         a.setSmall(true);
-        Objects.requireNonNull(a.getEquipment()).setItemInMainHand(m);
+        a.getEquipment().setItemInMainHand(m);
         this.axes.add(a);
         this.axe2(e, a, v.multiply(1.2), 0, m);
     }
 
     public void axe2(final Entity ef, final ArmorStand a, final Vector v, final int recurse, final ItemStack m) {
         if (recurse < 300) {
-            BrawlBox.INSTANCE.getServer().getScheduler().scheduleSyncDelayedTask(BrawlBox.INSTANCE, () -> {
+            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(BrawlBox.INSTANCE, () -> {
                 for (final Entity e : a.getNearbyEntities(1.0, 1.0, 1.0)) {
                     if (e != ef && e != a && e instanceof Damageable) {
                         if (m.getType() == Material.WOODEN_AXE) {
@@ -84,10 +95,9 @@ public class AxeEvents implements Listener {
                         if (m.getType() == Material.DIAMOND_AXE) {
                             ((Damageable) e).damage(10.0);
                         }
-                        if (m.hasItemMeta() && Objects.requireNonNull(m.getItemMeta()).hasEnchant(Enchantment.FIRE_ASPECT)) {
+                        if (m.hasItemMeta() && m.getItemMeta().hasEnchant(Enchantment.FIRE_ASPECT)) {
                             e.setFireTicks(20);
                         }
-                        //a.getLocation().getWorld().dropItem(a.getLocation(), m);
                         axes.remove(a);
                         a.remove();
                         break;
@@ -98,7 +108,7 @@ public class AxeEvents implements Listener {
                 final Vector vec = new Vector(v.getX(), v.getY() - 0.03, v.getZ());
                 a.setVelocity(vec);
                 if (!a.isDead() && a.isOnGround()) {
-                    Objects.requireNonNull(a.getLocation().getWorld()).dropItem(a.getLocation(), new ItemStack(m));
+                    a.getLocation().getWorld().dropItem(a.getLocation(), new ItemStack(m));
                     axes.remove(a);
                     a.remove();
                 } else if (!a.isDead()) {
@@ -106,7 +116,7 @@ public class AxeEvents implements Listener {
                 }
             }, 2L);
         } else {
-            Objects.requireNonNull(a.getLocation().getWorld()).dropItem(a.getLocation(), new ItemStack(m));
+            a.getLocation().getWorld().dropItem(a.getLocation(), new ItemStack(m));
             this.axes.remove(a);
             a.remove();
         }

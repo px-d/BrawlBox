@@ -31,12 +31,14 @@ public class ArmorGUI implements InventoryProvider {
         contents.set(1, 2, ClickableItem.of(new ItemBuilder(Material.CHAINMAIL_CHESTPLATE).name("&fChestplate&c+").addLore(Arrays.asList("", "&7Price: &6100$", "", "&f&lCOMMON CHESTPLATE")).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1).flags(ItemFlag.HIDE_ATTRIBUTES).build(), e -> {
             if (b.canBuy(100)) {
                 player.getInventory().addItem(ValueHolder.chestPlus);
+                b.buy(100);
             }
         }));
 
         contents.set(1, 3, ClickableItem.of(new ItemBuilder(Material.IRON_CHESTPLATE).name("&aIron Chestplate").addLore(Arrays.asList("", "&7Price: &6300$", "", "&a&lUNCOMMON CHESTPLATE")).flags(ItemFlag.HIDE_ATTRIBUTES).build(), e -> {
             if (b.canBuy(300)) {
                 player.getInventory().addItem(ValueHolder.ironChest);
+                b.buy(300);
             }
         }));
 
@@ -44,12 +46,14 @@ public class ArmorGUI implements InventoryProvider {
         contents.set(1, 5, ClickableItem.of(new ItemBuilder(Material.GOLDEN_CHESTPLATE).name("&9Chestplate&c++").addLore(Arrays.asList("", "&7Price: &6400$", "", "&9&lRARE CHESTPLATE")).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 3).flags(ItemFlag.HIDE_ATTRIBUTES).build(), e -> {
             if (b.canBuy(400)) {
                 player.getInventory().addItem(ValueHolder.chestPlusPlus);
+                b.buy(400);
             }
         }));
 
         contents.set(1, 6, ClickableItem.of(new ItemBuilder(Material.DIAMOND_CHESTPLATE).name("&5Diamond Chestplate").addLore(Arrays.asList("", "&7Price: &6800$", "", "&5&lEPIC CHESTPLATE")).enchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1).enchant(Enchantment.DURABILITY, 4).flags(ItemFlag.HIDE_ATTRIBUTES).build(), e -> {
             if (b.canBuy(800)) {
                 player.getInventory().addItem(ValueHolder.diamondChest);
+                b.buy(800);
             }
         }));
 

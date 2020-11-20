@@ -1,9 +1,6 @@
 package main;
 
-import events.AxeEvents;
-import events.CombatEvents;
-import events.GeneralEvents;
-import events.JoinQuitEvent;
+import events.*;
 import exec.FreezeExec;
 import exec.IExec;
 import org.bukkit.Bukkit;
@@ -46,6 +43,8 @@ public class BrawlBox extends JavaPlugin {
         pluginManager.registerEvents(new GeneralEvents(), this);
         pluginManager.registerEvents(new CombatEvents(), this);
         pluginManager.registerEvents(new AxeEvents(), this);
+        pluginManager.registerEvents(new ExplosiveBowEvent(), this);
+        pluginManager.registerEvents(new SafetyPlatformEvents(), this);
     }
 
     /**

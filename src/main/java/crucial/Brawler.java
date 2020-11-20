@@ -10,7 +10,7 @@ public class Brawler {
 
     private Player player;
     private int kills = 0;
-    private int coins = 300;
+    private int coins = 5000;
 
     private Teams team = Teams.NONE;
 
@@ -59,11 +59,22 @@ public class Brawler {
         this.coins += amount;
     }
 
+    public boolean canBuy(int amount) {
+        return coins >= amount ? true : false;
+    }
+
+    public void buy(int amount) {
+        if (coins >= amount) {
+            coins -= amount;
+        }
+    }
+
     public void kill() {
         player.getInventory().clear();
+        player.setHealth(20.0);
         isAlive = false;
 
-        switch (team){
+        switch (team) {
             case BLUE:
                 player.teleport(ValueHolder.blue_prep);
                 break;

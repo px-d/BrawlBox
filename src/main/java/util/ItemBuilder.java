@@ -6,13 +6,11 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -47,9 +45,8 @@ public class ItemBuilder {
 		return durability((short) data);
 	}
 
-	@SuppressWarnings("deprecation")
-	public ItemBuilder durability(short durability) {
-		item.setDurability(durability);
+	public ItemBuilder durability(int durability) {
+		((Damageable)item.getItemMeta()).setDamage(durability);
 		return this;
 	}
 
@@ -103,7 +100,13 @@ public class ItemBuilder {
 	}
 
 	public ItemBuilder lore(List<String> lore) {
-		meta.setLore(lore);
+		List<String> nLore = new ArrayList<>();
+
+		for(String s : lore){
+			nLore.add(ValueHolder.tacc(s));
+		}
+
+		meta.setLore(nLore);
 		return this;
 	}
 
@@ -124,12 +127,17 @@ public class ItemBuilder {
 
 	public ItemBuilder addLore(List<String> lines) {
 		List<String> lore = meta.getLore();
+		List<String> nLore = new ArrayList<>();
 
-		if (lore == null) {
-			return lore(lines);
+		for(String s : lines){
+			nLore.add(ValueHolder.tacc(s));
 		}
 
-		lore.addAll(lines);
+		if (lore == null) {
+			return lore(nLore);
+		}
+
+		lore.addAll(nLore);
 		return lore(lore);
 	}
 

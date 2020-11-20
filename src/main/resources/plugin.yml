@@ -11,3 +11,6 @@ commands:
   i:
     description: gives you an item
     usage: /i [item]
+  start:
+    description: Start the game early
+    usage: /start
