@@ -3,14 +3,16 @@ package crucial;
 import enums.Teams;
 import main.BrawlBox;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import util.ValueHolder;
 
 public class Brawler {
 
     private Player player;
     private int kills = 0;
-    private int coins = 5000;
+    private int coins = 300;
 
     private Teams team = Teams.NONE;
 
@@ -85,6 +87,11 @@ public class Brawler {
                 Bukkit.broadcastMessage(ValueHolder.tacc("&cERROR CODE 003"));
                 break;
         }
-
     }
+
+    public void heal() {
+        player.setHealth(20);
+    }
+
+
 }

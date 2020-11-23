@@ -1,10 +1,12 @@
 package events;
 
 import crucial.Brawler;
+import enums.State;
 import main.BrawlBox;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,6 +15,8 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+
+import java.util.Random;
 
 public class ExplosiveBowEvent implements Listener {
 
@@ -24,7 +28,8 @@ public class ExplosiveBowEvent implements Listener {
                 Brawler brawler = BrawlBox.gm.players.get(shooter.getUniqueId());
                 if (e.getEntity().getType() == EntityType.ARROW) {
                     if (e.getEntity().getCustomName().equals("explosiveArrow")) {
-                        double radius = 5.0;
+
+                        double radius = 2.5;
                         Location loc = e.getHitBlock().getLocation();
                         shooter.playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
                         loc.getWorld().spawnParticle(Particle.EXPLOSION_LARGE, loc.add(0, 1.2, 0), 5);
@@ -32,15 +37,27 @@ public class ExplosiveBowEvent implements Listener {
                             if (ent instanceof Player) {
                                 if (ent.getUniqueId() != shooter.getUniqueId()) {
                                     ((Player) ent).playSound(loc, Sound.ENTITY_GENERIC_EXPLODE, 1f, 1f);
-                                }
-                                Brawler victim = BrawlBox.gm.players.get(ent.getUniqueId());
-                                if (victim.getTeam() != brawler.getTeam()) {
-                                    if (((Player) ent).getHealth() - 4.0 > 0) {
-                                        ((Player) ent).damage(4);
+                                    Brawler victim = BrawlBox.gm.players.get(ent.getUniqueId());
+
+                                    if (BrawlBox.gm.state == State.LOBBY) {
+                                        if (((Player) ent).getHealth() - 4.0 > 0) {
+                                            ((Player) ent).damage(4);
+                                        } else {
+                                            victim.kill();
+                                        }
+                                        System.out.println("PROJECTILE");
+                                        ent.setVelocity(new Vector(0, 1, 0));
                                     } else {
-                                        victim.kill();
+                                        if (victim.getTeam() != brawler.getTeam()) {
+                                            if (((Player) ent).getHealth() - 4.0 > 0) {
+                                                ((Player) ent).damage(4);
+                                            } else {
+                                                victim.kill();
+                                            }
+                                            System.out.println("PROJECTILE");
+                                            ent.setVelocity(new Vector(new Random().nextDouble(), 1, new Random().nextDouble()));
+                                        }
                                     }
-                                    ent.setVelocity(new Vector(0, 1, 0));
                                 }
                             }
                         }
@@ -57,14 +74,11 @@ public class ExplosiveBowEvent implements Listener {
             e.getProjectile().setCustomName("explosiveArrow");
             if (e.getEntity() instanceof Player) {
                 Player shooter = (Player) e.getEntity();
-
                 Bukkit.getScheduler().runTaskLater(BrawlBox.INSTANCE, x -> {
                     if (!shooter.getInventory().containsAtLeast(new ItemStack(Material.ARROW), 1)) {
-                       shooter.getInventory().remove(Material.BOW);
+                        shooter.getInventory().remove(Material.BOW);
                     }
                 }, 1);
-
-
             }
         }
     }

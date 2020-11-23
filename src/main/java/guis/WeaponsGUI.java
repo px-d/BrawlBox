@@ -19,7 +19,7 @@ import java.util.Arrays;
 public class WeaponsGUI implements InventoryProvider {
 
     public static final SmartInventory INVENTORY = SmartInventory.builder().id("shop").provider(new WeaponsGUI())
-            .size(4, 9).title("" + ValueHolder.tacc("&9Shop > Weapons:"))
+            .size(4, 9).title("" + ValueHolder.tacc("&9Shop > Weapons"))
             .manager(BrawlBox.INSTANCE.inventoryManager).closeable(true).build();
 
 
@@ -34,15 +34,15 @@ public class WeaponsGUI implements InventoryProvider {
             } else if (player.getInventory().getItem(0).getType() == Material.STONE_SWORD) {
                 b.addCoins(100);
                 player.sendMessage(ValueHolder.tacc("&aYou got a refund of &6100 Coins&a."));
-                player.getInventory().setItem(0, new ItemStack(Material.WOODEN_SWORD));
+                player.getInventory().setItem(0, ValueHolder.wooden_sword);
             } else if (player.getInventory().getItem(0).getType() == Material.GOLDEN_SWORD) {
                 b.addCoins(300);
                 player.sendMessage(ValueHolder.tacc("&aYou got a refund of &6300 Coins&a."));
-                player.getInventory().setItem(0, new ItemStack(Material.WOODEN_SWORD));
+                player.getInventory().setItem(0, ValueHolder.wooden_sword);
             } else if (player.getInventory().getItem(0).getType() == Material.IRON_SWORD) {
                 b.addCoins(500);
                 player.sendMessage(ValueHolder.tacc("&aYou got a refund of &6500 Coins&a."));
-                player.getInventory().setItem(0, new ItemStack(Material.WOODEN_SWORD));
+                player.getInventory().setItem(0, ValueHolder.wooden_sword);
             }
         }));
 
@@ -51,7 +51,7 @@ public class WeaponsGUI implements InventoryProvider {
                 if (b.canBuy(100)) {
                     b.buy(100);
                     player.sendMessage(ValueHolder.tacc("&aYou purchased &6Stone Sword&a."));
-                    player.getInventory().setItem(0, new ItemStack(Material.STONE_SWORD));
+                    player.getInventory().setItem(0, ValueHolder.stone_sword);
                 }else{
                     player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
                 }
@@ -61,13 +61,13 @@ public class WeaponsGUI implements InventoryProvider {
 
                 b.addCoins(200);
                 player.sendMessage(ValueHolder.tacc("&aYou got a refund of &6200 Coins&a."));
-                player.getInventory().setItem(0, new ItemStack(Material.STONE_SWORD));
+                player.getInventory().setItem(0, ValueHolder.stone_sword);
 
 
             } else if (player.getInventory().getItem(0).getType() == Material.IRON_SWORD) {
                 b.addCoins(400);
                 player.sendMessage(ValueHolder.tacc("&aYou got a refund of &6400 Coins&a."));
-                player.getInventory().setItem(0, new ItemStack(Material.STONE_SWORD));
+                player.getInventory().setItem(0, ValueHolder.stone_sword);
             }
         }));
 
@@ -78,7 +78,7 @@ public class WeaponsGUI implements InventoryProvider {
                 if (b.canBuy(300)) {
                     b.buy(300);
                     player.sendMessage(ValueHolder.tacc("&aYou purchased &6Golden Sword&a."));
-                    player.getInventory().setItem(0, new ItemStack(Material.GOLDEN_SWORD));
+                    player.getInventory().setItem(0, ValueHolder.golden_sword);
                 }else{
                     player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
                 }
@@ -86,7 +86,7 @@ public class WeaponsGUI implements InventoryProvider {
                 if (b.canBuy(200)) {
                     b.buy(200);
                     player.sendMessage(ValueHolder.tacc("&aYou purchased &6Golden Sword&a."));
-                    player.getInventory().setItem(0, new ItemStack(Material.GOLDEN_SWORD));
+                    player.getInventory().setItem(0, ValueHolder.golden_sword);
                 }else{
                     player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
                 }
@@ -95,7 +95,7 @@ public class WeaponsGUI implements InventoryProvider {
             } else if (player.getInventory().getItem(0).getType() == Material.IRON_SWORD) {
                 b.addCoins(200);
                 player.sendMessage(ValueHolder.tacc("&aYou got a refund of &6200 Coins&a."));
-                player.getInventory().setItem(0, new ItemStack(Material.GOLDEN_SWORD));
+                player.getInventory().setItem(0, ValueHolder.golden_sword);
             }
         }));
 
@@ -104,7 +104,7 @@ public class WeaponsGUI implements InventoryProvider {
                 if (b.canBuy(500)) {
                     b.buy(500);
                     player.sendMessage(ValueHolder.tacc("&aYou purchased &6Iron Sword&a."));
-                    player.getInventory().setItem(0, new ItemStack(Material.IRON_SWORD));
+                    player.getInventory().setItem(0, ValueHolder.iron_sword);
                 }else{
                     player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
                 }
@@ -112,7 +112,7 @@ public class WeaponsGUI implements InventoryProvider {
                 if (b.canBuy(400)) {
                     b.buy(400);
                     player.sendMessage(ValueHolder.tacc("&aYou purchased &6Iron Sword&a."));
-                    player.getInventory().setItem(0, new ItemStack(Material.IRON_SWORD));
+                    player.getInventory().setItem(0, ValueHolder.iron_sword);
                 }else{
                     player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
                 }
@@ -120,7 +120,7 @@ public class WeaponsGUI implements InventoryProvider {
                 if (b.canBuy(200)) {
                     b.buy(200);
                     player.sendMessage(ValueHolder.tacc("&aYou purchased &6Iron Sword&a."));
-                    player.getInventory().setItem(0, new ItemStack(Material.IRON_SWORD));
+                    player.getInventory().setItem(0, ValueHolder.iron_sword);
                 }else{
                     player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
                 }

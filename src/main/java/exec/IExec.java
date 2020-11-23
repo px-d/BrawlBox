@@ -18,6 +18,13 @@ public class IExec implements CommandExecutor {
         if (sender instanceof Player) {
             if(sender.isOp()){
                 if (args.length == 1) {
+
+                    if(args[0].equalsIgnoreCase("HK_BOW")){
+                        ((Player) sender).getInventory().addItem(ValueHolder.creeperBow);
+                        ((Player) sender).getInventory().setItem(9,new ItemStack(Material.ARROW, 20));
+                        return true;
+                    }
+
                     Material m;
                     try {
                         m = Material.valueOf(args[0].toUpperCase());

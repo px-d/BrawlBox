@@ -11,3 +11,12 @@ commands:
   i:
     description: gives you an item
     usage: /i [item]
+  start:
+    description: Start the game early
+    usage: /start
+  hub:
+    description: teleport you to the lobby in case there is something wrong
+    usage: /hub
+  rounds:
+    description: set max number of rounds
+    usage: /rounds [number]

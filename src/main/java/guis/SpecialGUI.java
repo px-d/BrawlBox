@@ -57,33 +57,33 @@ public class SpecialGUI implements InventoryProvider {
         }));
 
 
-        contents.set(1, 4, ClickableItem.of(new ItemBuilder(Material.IRON_AXE).name("&dJarnbjorn").amount(1).lore(Arrays.asList("", "&7Price: &6300$", "", "&7Throw this axe to deal", "&7massive damage.", "", "&d&k&lK &r&d&l&lMYTHIC WEAPON &d&k&lK")).build(), e -> {
-            if (b.canBuy(300)) {
-                if (player.getInventory().contains(Material.IRON_AXE)) {
-                    player.sendMessage(ValueHolder.tacc("&cYou already bought this."));
-                } else {
-                    player.sendMessage(ValueHolder.tacc("&aYou purchased a &6Jarnbjorn&a."));
-                    b.buy(300);
-                    player.getInventory().addItem(ValueHolder.jarnbjorn);
-                }
-            } else {
-                player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
-            }
-        }));
+//        contents.set(1, 4, ClickableItem.of(new ItemBuilder(Material.IRON_AXE).name("&dJarnbjorn").amount(1).lore(Arrays.asList("", "&7Price: &6300$", "", "&7Throw this axe to deal", "&7massive damage.", "", "&d&k&lK &r&d&l&lMYTHIC WEAPON &d&k&lK")).build(), e -> {
+//            if (b.canBuy(300)) {
+//                if (player.getInventory().contains(Material.IRON_AXE)) {
+//                    player.sendMessage(ValueHolder.tacc("&cYou already bought this."));
+//                } else {
+//                    player.sendMessage(ValueHolder.tacc("&aYou purchased a &6Jarnbjorn&a."));
+//                    b.buy(300);
+//                    player.getInventory().addItem(ValueHolder.jarnbjorn);
+//                }
+//            } else {
+//                player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
+//            }
+//        }));
 
-        contents.set(1, 5, ClickableItem.of(new ItemBuilder(Material.DIAMOND_HOE).name("&6Reaper's Scythe").amount(1).lore(Arrays.asList("", "&7Price: &6400$", "", "&7You'll become your enemies", "&7worst nightmare...", "", "&6&lLEGENDARY WEAPON")).build(), e -> {
+        contents.set(1, 5, ClickableItem.of(new ItemBuilder(Material.DIAMOND_HOE).name("&6Reaper's  &c&l(WIP)").amount(1).lore(Arrays.asList("", "&7Price: &6400$", "", "&7You'll become your enemies", "&7worst nightmare...", "", "&6&lLEGENDARY WEAPON","","&ccurrently disabled")).build(), e -> {
 
-            if (b.canBuy(400)) {
-                if (player.getInventory().contains(Material.DIAMOND_HOE)) {
-                    player.sendMessage(ValueHolder.tacc("&cYou already bought this."));
-                } else {
-                    player.sendMessage(ValueHolder.tacc("&aYou purchased a &6Reaper Scythe&a."));
-                    b.buy(400);
-                    player.getInventory().addItem(ValueHolder.reaperScythe);
-                }
-            } else {
-                player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
-            }
+//            if (b.canBuy(400)) {
+//                if (player.getInventory().contains(Material.DIAMOND_HOE)) {
+//                    player.sendMessage(ValueHolder.tacc("&cYou already bought this."));
+//                } else {
+//                    player.sendMessage(ValueHolder.tacc("&aYou purchased a &6Reaper Scythe&a."));
+//                    b.buy(400);
+//                    player.getInventory().addItem(ValueHolder.reaperScythe);
+//                }
+//            } else {
+//                player.sendMessage(ValueHolder.tacc("&cYou don't have enough coins."));
+//            }
 
         }));
         contents.set(1, 6, ClickableItem.of(new ItemBuilder(Material.BLAZE_ROD).name("&5Safety Platform").amount(1).lore(Arrays.asList("", "&7Price: &6200$", "", "&7Haha N00B.. You really", "&7need a sAfeTy PlAtFoRM?!?!", "", "&5&lEPIC TOOL")).build(), e -> {
@@ -100,7 +100,7 @@ public class SpecialGUI implements InventoryProvider {
             }
         }));
 
-        contents.set(2, 4, ClickableItem.of(new ItemBuilder(Material.BOW).name("&aHotkeyyy Bow").lore(Arrays.asList("&7Explosive I", "", "&7Price: &6500$", "", "&7&oAww.. Man...", "", "&7Shoots explosive projectiles", "&7that damage your enemies", "&7and launches them in the air.", "", "&a&lUNCOMMON BOW")).build(), e -> {
+        contents.set(1, 4, ClickableItem.of(new ItemBuilder(Material.BOW).name("&aHotkeyyy Bow").lore(Arrays.asList("&7Explosive I", "", "&7Price: &6500$", "", "&7&oAww.. Man...", "", "&7Shoots explosive projectiles", "&7that damage your enemies", "&7and launches them in the air.", "", "&a&lUNCOMMON BOW")).build(), e -> {
             if (b.canBuy(500)) {
                 player.getInventory().addItem(ValueHolder.creeperBow);
                 player.getInventory().setItem(20,new ItemStack(Material.ARROW, 3));

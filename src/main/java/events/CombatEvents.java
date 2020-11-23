@@ -1,27 +1,36 @@
 package events;
 
 import crucial.Brawler;
+import enums.State;
 import enums.Teams;
 import main.BrawlBox;
 import org.bukkit.Sound;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import util.ActionBarAPI;
 import util.ValueHolder;
 
 public class CombatEvents implements Listener {
 
     @EventHandler
     public void onHit(EntityDamageByEntityEvent e) {
+
+        if(e.getEntity() instanceof Player && e.getDamager() instanceof Arrow){
+            e.getDamager().remove();
+            e.setCancelled(true);
+        }
+
         if (e.getEntity() instanceof Player && e.getDamager() instanceof Player) {
             Brawler hitter = BrawlBox.gm.players.get(e.getDamager().getUniqueId());
             Brawler victim = BrawlBox.gm.players.get(e.getEntity().getUniqueId());
 
-            if (hitter.getTeam() == victim.getTeam()) {
+            if (hitter.getTeam() == victim.getTeam() && BrawlBox.gm.state != State.LOBBY) {
                 e.setCancelled(true);
-                hitter.getPlayer().sendMessage(ValueHolder.tacc("&cDon't hurt your allies :("));
+                ActionBarAPI.abToPlayer(ValueHolder.tacc("&cDon't hurt your teammates :("),hitter.getPlayer());
             }
 
             if (((Player) e.getDamager()).getInventory().getItemInMainHand().getType().toString().contains("AXE")) {
@@ -36,9 +45,9 @@ public class CombatEvents implements Listener {
 
                 hitter.addKill();
                 //REWARDS
-                hitter.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)"));
+                ActionBarAPI.abToPlayer("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)",hitter.getPlayer());
+//                hitter.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)"));
                 hitter.addCoins(200);
-                hitter.getPlayer().playSound(hitter.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,1f);
                 if (victim.getTeam() == Teams.BLUE) {
                     victim.getPlayer().teleport(ValueHolder.blue_prep);
                 }

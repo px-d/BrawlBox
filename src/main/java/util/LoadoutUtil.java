@@ -13,8 +13,9 @@ public class LoadoutUtil {
 
     public static void redLoadout(Player p) {
         ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).flags(ItemFlag.HIDE_ATTRIBUTES).build();
-        ItemStack pick = new ItemBuilder(Material.WOODEN_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
+        ItemStack pick = new ItemBuilder(Material.IRON_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         pick.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        pick.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
         pick.getItemMeta().setUnbreakable(true);
         ItemStack blocks = new ItemBuilder(Material.RED_CONCRETE).amount(9).build();
 
@@ -43,13 +44,15 @@ public class LoadoutUtil {
         p.getInventory().setArmorContents(new ItemStack[]{boots, legs, chest, helmet});
         p.getInventory().addItem(sword);
         p.getInventory().addItem(pick);
-        p.getInventory().addItem(blocks);
+        p.getInventory().setItem(8, blocks);
+        p.getInventory().setItem(17, ValueHolder.teamInv);
     }
 
     public static void blueLoadout(Player p) {
         ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).flags(ItemFlag.HIDE_ATTRIBUTES).build();
-        ItemStack pick = new ItemBuilder(Material.WOODEN_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
+        ItemStack pick = new ItemBuilder(Material.IRON_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         pick.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+        pick.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
         pick.getItemMeta().setUnbreakable(true);
         ItemStack blocks = new ItemBuilder(Material.BLUE_CONCRETE).amount(9).build();
 
@@ -78,7 +81,8 @@ public class LoadoutUtil {
         p.getInventory().setArmorContents(new ItemStack[]{boots, legs, chest, helmet});
         p.getInventory().addItem(sword);
         p.getInventory().addItem(pick);
-        p.getInventory().addItem(blocks);
+        p.getInventory().setItem(8, blocks);
+        p.getInventory().setItem(17, ValueHolder.teamInv);
     }
 
 
