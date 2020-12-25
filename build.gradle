@@ -48,4 +48,4 @@ compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
 }
 
-libsDirName = "C:\\Users\\phili\\Documents\\Minecraft\\1.16.3_Server\\plugins"
+libsDirName = "C:\\Users\\phili\\Documents\\Minecraft\\BungeeCord Network\\HG01\\plugins"

@@ -4,12 +4,9 @@ import crucial.Brawler;
 import enums.State;
 import enums.Teams;
 import main.BrawlBox;
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import util.MessageAPI;
 import util.ValueHolder;
 
 public class ChatEvents implements Listener {
@@ -17,10 +14,10 @@ public class ChatEvents implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
 
-        if (e.getMessage().equalsIgnoreCase("leak meine ip")) {
-            MessageAPI.msgToAll("&a"+e.getPlayer().getName() + "'s &7IP: &c" + ((CraftPlayer) e.getPlayer()).getAddress().getAddress().getHostAddress());
+        if (BrawlBox.gm.state == State.LOBBY) {
+            e.setCancelled(true);
+            msgToAll(ValueHolder.tacc("&7[&aALL&7] " + e.getPlayer().getName() + ": " + e.getMessage().replaceAll("@a", "")));
         }
-
         if (BrawlBox.gm.state == State.GAME || BrawlBox.gm.state == State.PREP) {
             e.setCancelled(true);
 

@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import util.MessageAPI;
 import util.ValueHolder;
 
-public class HubExec implements CommandExecutor {
+public class SpawnExec implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
 

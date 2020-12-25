@@ -1,11 +1,13 @@
 package crucial;
 
+import enums.Lang;
 import enums.Teams;
 import main.BrawlBox;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import util.MessageAPI;
 import util.ValueHolder;
 
 public class Brawler {
@@ -15,8 +17,9 @@ public class Brawler {
     private int coins = 300;
 
     private Teams team = Teams.NONE;
-
     public boolean isAlive = true;
+
+    public Lang lang = Lang.DE;
 
     public Brawler(Player player) {
         this.player = player;
@@ -62,7 +65,7 @@ public class Brawler {
     }
 
     public boolean canBuy(int amount) {
-        return coins >= amount ? true : false;
+        return coins >= amount;
     }
 
     public void buy(int amount) {
@@ -87,6 +90,13 @@ public class Brawler {
                 Bukkit.broadcastMessage(ValueHolder.tacc("&cERROR CODE 003"));
                 break;
         }
+
+        if (lang == Lang.EN) {
+            MessageAPI.sendTitleToPlayer(player, "&cYOU DIED", "&aBetter Luck next round.", 5, 50, 5);
+        }else{
+            MessageAPI.sendTitleToPlayer(player, "&cDU BIST GESTORBEN", "&aMehr Erfolg n\u00E4chste Runde.", 5, 50, 5);
+        }
+
     }
 
     public void heal() {

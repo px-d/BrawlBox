@@ -1,5 +1,6 @@
 package exec;
 
+import guis.ShopGUI;
 import main.BrawlBox;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
@@ -9,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import util.ItemBuilder;
 import util.ValueHolder;
 
 public class IExec implements CommandExecutor {
@@ -16,12 +18,25 @@ public class IExec implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
 
         if (sender instanceof Player) {
-            if(sender.isOp()){
+            if (sender.isOp()) {
                 if (args.length == 1) {
 
-                    if(args[0].equalsIgnoreCase("HK_BOW")){
+                    if (args[0].equalsIgnoreCase("HK_BOW")) {
                         ((Player) sender).getInventory().addItem(ValueHolder.creeperBow);
-                        ((Player) sender).getInventory().setItem(9,new ItemStack(Material.ARROW, 20));
+                        ((Player) sender).getInventory().setItem(9, new ItemStack(Material.ARROW, 20));
+                        return true;
+                    }
+
+                    if (args[0].equalsIgnoreCase("sw")) {
+                        ((Player) sender).getInventory().addItem(new ItemBuilder(Material.IRON_SWORD).setCooldown(1.0D).build());
+                        return true;
+                    }
+                    if (args[0].equalsIgnoreCase("kb")) {
+                        ((Player) sender).getInventory().addItem(ValueHolder.kbStick);
+                        return true;
+                    }
+                    if (args[0].equalsIgnoreCase("shop")) {
+                        ShopGUI.INVENTORY.open((Player) sender);
                         return true;
                     }
 

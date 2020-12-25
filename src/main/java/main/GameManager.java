@@ -1,17 +1,15 @@
 package main;
 
 import crucial.Brawler;
+import enums.Lang;
 import enums.State;
 import enums.Teams;
-import guis.TeamGUI;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.Action;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.omg.IOP.ENCODING_CDR_ENCAPS;
 import util.*;
 import util.scoreboard.FastBoard;
 
@@ -38,7 +36,7 @@ public class GameManager {
 
     //TIMES
     private int lobbyTime = 60;
-    private int preptime = 10;
+    private int preptime = 15;
     private int endtime = 30;
 
     //INVENTORIES
@@ -53,12 +51,38 @@ public class GameManager {
     public GameManager() {
         run();
         updateBoards();
+        ValueHolder.center.getWorld().getEntities().forEach(Entity::remove);
+        createShops();
+    }
+
+    /**
+     * Creates both Shops
+     */
+    private void createShops() {
+        World world = ValueHolder.center.getWorld();
+        Entity shop_red = world.spawnEntity(ValueHolder.red_shop, EntityType.VILLAGER);
+        Entity shop_blue = world.spawnEntity(ValueHolder.blue_shop, EntityType.VILLAGER);
+
+        shop_red.setInvulnerable(true);
+        shop_red.setSilent(true);
+        shop_red.setCustomName(ValueHolder.tacc("&cShop"));
+        shop_red.setCustomNameVisible(true);
+
+        shop_blue.setInvulnerable(true);
+        shop_blue.setSilent(true);
+        shop_blue.setCustomName(ValueHolder.tacc("&9Shop"));
+        shop_blue.setCustomNameVisible(true);
+
+        ((LivingEntity) shop_blue).setAI(false);
+        ((LivingEntity) shop_red).setAI(false);
     }
 
     /**
      * @param p The Player you want to register
      */
     public void registerPlayer(Player p) {
+
+
         p.getInventory().clear();
         Brawler brawler = new Brawler(p);
         FastBoard board = new FastBoard(p);
@@ -70,9 +94,10 @@ public class GameManager {
         players.put(p.getUniqueId(), brawler);
         boards.put(p.getUniqueId(), board);
 
-        p.getInventory().setItem(2, new ItemBuilder(Material.STICK).name("&cLobby Stick").enchant(Enchantment.KNOCKBACK, 4).addLore("", "&7No Worries, you won't", "&7find this in game :)", "", "&c&lSPECIAL TOOL").build());
-        p.getInventory().setItem(4, new ItemBuilder(Material.CHEST).name(ValueHolder.tacc("&aTeamselector &7(Rightclick)")).build());
-        p.getInventory().setItem(6, ValueHolder.getWelcomeBook());
+
+        p.getInventory().setItem(2, new ItemBuilder(Material.STICK).name("&cLobby Stick").enchant(Enchantment.KNOCKBACK, 4).build());
+        p.getInventory().setItem(4, new ItemBuilder(Material.CHEST).name(ValueHolder.tacc("&aTeams")).build());
+        p.getInventory().setItem(6, brawler.lang == Lang.EN ? LangEN.getWelcomeBook() : LangDE.getWelcomeBook());
     }
 
     /**
@@ -94,7 +119,7 @@ public class GameManager {
         Bukkit.getScheduler().runTaskTimer(BrawlBox.INSTANCE, () -> {
             if (state == State.GAME) {
                 for (Brawler b : players.values()) {
-                    if (!b.getPlayer().getInventory().containsAtLeast(new ItemStack(Material.BLUE_CONCRETE),10) && b.getTeam() == Teams.BLUE && b.isAlive) {
+                    if (!b.getPlayer().getInventory().containsAtLeast(new ItemStack(Material.BLUE_CONCRETE), 10) && b.getTeam() == Teams.BLUE && b.isAlive) {
                         b.getPlayer().getInventory().addItem(new ItemStack(Material.BLUE_CONCRETE));
                     }
                     if (!b.getPlayer().getInventory().containsAtLeast(new ItemStack(Material.RED_CONCRETE), 10) && b.getTeam() == Teams.RED && b.isAlive) {
@@ -106,19 +131,22 @@ public class GameManager {
 
         Bukkit.getScheduler().runTaskTimer(BrawlBox.INSTANCE, e -> {
             for (Brawler b : players.values()) {
-                b.getPlayer().setPlayerListHeader(ValueHolder.tacc("\n   &aCoins: &6" + b.getCoins() + "$&7, &aKills: &e" + b.getKills()) + "   \n");
-                b.getPlayer().setPlayerListFooter(ValueHolder.tacc("\n&cRed " + score_red + " &r: &9" + score_blue + " Blue\n\n" + roundString() + "\n\n   &b&lBrawl&f&lBox&r &7by &c&lsohotek   "));
+                if (b.lang == Lang.EN) {
+                    b.getPlayer().setPlayerListHeader(ValueHolder.tacc("\n   &aCoins: &6" + b.getCoins() + "$&7, &aKills: &e" + b.getKills()) + "   \n");
+                    b.getPlayer().setPlayerListFooter(ValueHolder.tacc("\n&cRed " + score_red + " &r: &9" + score_blue + " Blue\n\n" + roundString() + "\n\n   &b&lBrawl&f&lBox   "));
+                } else {
+                    b.getPlayer().setPlayerListHeader(ValueHolder.tacc("\n   &aCoins: &6" + b.getCoins() + "$&7, &aKills: &e" + b.getKills()) + "   \n");
+                    b.getPlayer().setPlayerListFooter(ValueHolder.tacc("\n&cRot " + score_red + " &r: &9" + score_blue + " Blau\n\n" + roundString() + "\n\n   &b&lBrawl&f&lBox   "));
+                }
             }
             if (!pause) {
                 if (state == State.GAME || state == State.PREP) {
                     if (getRedPlayers().size() == 0) {
-                        Bukkit.broadcastMessage("NO RED PLAYERS LEFT");
                         score_blue = end_rounds;
                         state = State.END;
                     }
 
                     if (getBluePlayers().size() == 0) {
-                        Bukkit.broadcastMessage("NO BLUE PLAYERS LEFT");
                         score_red = end_rounds;
                         state = State.END;
                     }
@@ -128,15 +156,15 @@ public class GameManager {
                 if (state == State.LOBBY) {
                     if (lobbyTime == 1) {
                         state = State.PREP;
-                        tpToPrep();
+                        initialPrep();
                         ActionBarAPI.sendABToAll("");
-                        MessageAPI.msgToAll(ValueHolder.prefix + "&aThe game has started. Buy equipment during the &cPrep-Phase &aon the&e End Portal Frame&a behind you.&c Good Luck, Have Fun!");
+                        MessageAPI.gameStart();
                         MessageAPI.bong();
                     } else if (players.size() >= min_players) {
                         lobbyTime--;
 
                         if (lobbyTime <= 5 && lobbyTime > 0) {
-                            MessageAPI.msgToAll(ValueHolder.prefix + "&aGame is starting in &e" + lobbyTime + "s");
+                            MessageAPI.gameStartingIn(lobbyTime);
                             MessageAPI.bing();
                         }
 
@@ -149,24 +177,23 @@ public class GameManager {
                     if (preptime == 1) {
                         tpToArena();
                         state = State.GAME;
-                        preptime = 10;
-                        MessageAPI.msgToAll(ValueHolder.prefix + "&aPreperation is over. It's getting real serious. &lGO! GO! GO!");
+                        preptime = 15;
+                        MessageAPI.prepOver();
                         MessageAPI.bong();
                     } else {
                         preptime--;
                         if (preptime % 10 == 0 || preptime <= 5) {
-                            MessageAPI.msgToAll(ValueHolder.prefix + "&aThe Preperation-Phase is ending in &e" + preptime + "s&a.");
+                            MessageAPI.prepEndsIn(preptime);
                             if (preptime <= 3) MessageAPI.bing();
                         }
                     }
                 }
 
-
                 if (state == State.END) {
                     if (score_blue == end_rounds) {
-                        ActionBarAPI.sendABToAll("&9BLUE TEAM &aWON");
+                        MessageAPI.teamWon(Teams.BLUE);
                     } else if (score_red == end_rounds) {
-                        ActionBarAPI.sendABToAll("&CRED TEAM &aWON");
+                        MessageAPI.teamWon(Teams.RED);
                     }
                     if (endtime == 30) {
                         Bukkit.broadcastMessage(ValueHolder.tacc("&cServer is restarting in &e" + endtime + "s"));
@@ -175,9 +202,9 @@ public class GameManager {
                         endGame();
 
                         if (score_blue == end_rounds) {
-                            Bukkit.broadcastMessage(ValueHolder.prefix + ValueHolder.tacc("&9Blue Team &ahas won the game. &6&lGGs!"));
+                            MessageAPI.bcWinner(Teams.BLUE);
                         } else if (score_red == end_rounds) {
-                            Bukkit.broadcastMessage(ValueHolder.prefix + ValueHolder.tacc("&cRed Team &ahas won the game. &6&lGGs!"));
+                            MessageAPI.bcWinner(Teams.RED);
                         }
                     }
 
@@ -187,6 +214,12 @@ public class GameManager {
                     }
 
                     if (endtime == 0) {
+
+
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            BrawlBox.INSTANCE.sendPlayerToServer(player, "lobby");
+                        }
+
                         Bukkit.getServer().reload();
                     }
                     endtime--;
@@ -200,11 +233,7 @@ public class GameManager {
             b.getPlayer().getInventory().clear();
             b.getPlayer().getInventory().setArmorContents(null);
             b.getPlayer().teleport(ValueHolder.lobby);
-
-            b.getPlayer().sendMessage("");
-            b.getPlayer().sendMessage(ValueHolder.tacc("&a&lThank you for playing. Please report any bugs you encounter on my discord."));
-            b.getPlayer().sendMessage("");
-
+            MessageAPI.ty();
         }
 
     }
@@ -227,64 +256,125 @@ public class GameManager {
                 Brawler brawler = players.get(b.getPlayer().getUniqueId());
                 if (state == State.LOBBY) {
                     if (missing_players > 0) {
-                        ActionBarAPI.sendABToAll("&cWaiting for " + missing_players + " more...");
+                        MessageAPI.abWaiting(missing_players);
                     } else {
-                        ActionBarAPI.sendABToAll("&aGame starting in &e" + lobbyTime + "s");
+                        MessageAPI.abGameStart(lobbyTime);
                     }
-                    b.updateLines(Arrays.asList(
-                            "",
-                            ValueHolder.tacc("Players: &a" + players.size() + "/" + Bukkit.getMaxPlayers()),
-                            "",
-                            "Team: " + brawler.getStringTeam(),
-                            "",
-                            ValueHolder.tacc("Starting in: &a" + lobbyTime)));
+
+                    if (brawler.lang == Lang.EN) {
+                        b.updateLines(Arrays.asList(
+                                "",
+                                ValueHolder.tacc("Players: &a" + players.size() + "/" + Bukkit.getMaxPlayers()),
+                                "",
+                                "Team: " + brawler.getStringTeam(),
+                                "",
+                                ValueHolder.tacc("Starting in: &a" + lobbyTime)));
+                    } else {
+                        b.updateLines(Arrays.asList(
+                                "",
+                                ValueHolder.tacc("Spieler: &a" + players.size() + "/" + Bukkit.getMaxPlayers()),
+                                "",
+                                "Team: " + brawler.getStringTeam(),
+                                "",
+                                ValueHolder.tacc("Startet in: &a" + lobbyTime)));
+
+                    }
                 }
 
                 if (state == State.PREP) {
+                    if (brawler.lang == Lang.EN) {
+                        b.updateLines(Arrays.asList(
+                                "",
+                                "Team: " + brawler.getStringTeam(),
+                                "Coins: " + ValueHolder.tacc("&6" + brawler.getCoins() + "$"),
+                                "",
+                                "Score:",
+                                ValueHolder.tacc("  &cRed&f: " + score_red),
+                                ValueHolder.tacc("  &9Blue&f: " + score_blue),
+                                "",
+                                ValueHolder.tacc("Prep: &a" + preptime + "s")
+                        ));
+                    } else {
+                        b.updateLines(Arrays.asList(
+                                "",
+                                "Team: " + brawler.getStringTeam(),
+                                "Coins: " + ValueHolder.tacc("&6" + brawler.getCoins() + "$"),
+                                "",
+                                "Punkte:",
+                                ValueHolder.tacc("  &cRot&f: " + score_red),
+                                ValueHolder.tacc("  &9Blau&f: " + score_blue),
+                                "",
+                                ValueHolder.tacc("Prep: &a" + preptime + "s")
+                        ));
+                    }
 
-                    b.updateLines(Arrays.asList(
-                            "",
-                            "Team: " + brawler.getStringTeam(),
-                            "Coins: " + ValueHolder.tacc("&6" + brawler.getCoins() + "$"),
-                            "",
-                            "Score:",
-                            ValueHolder.tacc("  &cRed&f: " + score_red),
-                            ValueHolder.tacc("  &9Blue&f: " + score_blue),
-                            "",
-                            ValueHolder.tacc("Prep: &a" + preptime + "s")
-                    ));
                 }
 
                 if (state == State.GAME) {
-                    b.updateLines(Arrays.asList(
-                            "",
-                            ValueHolder.tacc("Kills: &a" + brawler.getKills()),
-                            ValueHolder.tacc("Coins: &6" + brawler.getCoins() + "$"),
-                            "",
-                            "Score:",
-                            ValueHolder.tacc("  &cRed&f: " + score_red),
-                            ValueHolder.tacc("  &9Blue&f: " + score_blue),
-                            "",
-                            "  " + core[0] + " " + core[1] + " " + core[2],
-                            "  " + core[3] + " " + core[4] + " " + core[5],
-                            "  " + core[6] + " " + core[7] + " " + core[8]
+                    if (brawler.lang == Lang.EN) {
+                        b.updateLines(Arrays.asList(
+                                "",
+                                ValueHolder.tacc("Kills: &a" + brawler.getKills()),
+                                ValueHolder.tacc("Coins: &6" + brawler.getCoins() + "$"),
+                                "",
+                                "Score:",
+                                ValueHolder.tacc("  &cRed&f: " + score_red),
+                                ValueHolder.tacc("  &9Blue&f: " + score_blue),
+                                "",
+                                "  " + core[0] + " " + core[1] + " " + core[2],
+                                "  " + core[3] + " " + core[4] + " " + core[5],
+                                "  " + core[6] + " " + core[7] + " " + core[8]
 
-                    ));
+                        ));
+                    } else {
+                        b.updateLines(Arrays.asList(
+                                "",
+                                ValueHolder.tacc("Kills: &a" + brawler.getKills()),
+                                ValueHolder.tacc("Coins: &6" + brawler.getCoins() + "$"),
+                                "",
+                                "Punkte:",
+                                ValueHolder.tacc("  &cRot&f: " + score_red),
+                                ValueHolder.tacc("  &9Blau&f: " + score_blue),
+                                "",
+                                "  " + core[0] + " " + core[1] + " " + core[2],
+                                "  " + core[3] + " " + core[4] + " " + core[5],
+                                "  " + core[6] + " " + core[7] + " " + core[8]
+
+                        ));
+                    }
+
                 }
 
                 if (state == State.END) {
                     if (score_blue == end_rounds) {
-                        b.updateLines(Arrays.asList(
-                                "",
-                                ValueHolder.tacc("&9Blue Team &awon."),
-                                ""
-                        ));
+                        if (brawler.lang == Lang.EN) {
+                            b.updateLines(Arrays.asList(
+                                    "",
+                                    ValueHolder.tacc("&9Blue Team &awon."),
+                                    ""
+                            ));
+                        } else {
+                            b.updateLines(Arrays.asList(
+                                    "",
+                                    ValueHolder.tacc("&9Team Blau hat &agewonnen."),
+                                    ""
+                            ));
+                        }
+
                     } else if (score_red == end_rounds) {
-                        b.updateLines(Arrays.asList(
-                                "",
-                                ValueHolder.tacc("&cRed Team &awon."),
-                                ""
-                        ));
+                        if (brawler.lang == Lang.EN) {
+                            b.updateLines(Arrays.asList(
+                                    "",
+                                    ValueHolder.tacc("&cRed Team &awon."),
+                                    ""
+                            ));
+                        } else {
+                            b.updateLines(Arrays.asList(
+                                    "",
+                                    ValueHolder.tacc("&cTeam Rot hat &agewonnen."),
+                                    ""
+                            ));
+                        }
                     }
                 }
             }
@@ -477,10 +567,29 @@ public class GameManager {
         return bluePl;
     }
 
+    private void tpToPrep() {
+        for (Brawler b : players.values()) {
+            b.isAlive = true;
+            b.getPlayer().getInventory().clear();
+
+            if (b.getTeam() == Teams.RED) {
+                b.getPlayer().teleport(ValueHolder.red_prep);
+                LoadoutUtil.redLoadout(b.getPlayer());
+            } else if (b.getTeam() == Teams.BLUE) {
+                b.getPlayer().teleport(ValueHolder.blue_prep);
+                LoadoutUtil.blueLoadout(b.getPlayer());
+            } else {
+                b.getPlayer().teleport(ValueHolder.center);
+                b.getPlayer().setGameMode(GameMode.SPECTATOR);
+            }
+            b.heal();
+        }
+    }
+
     /**
      * Teleport all Players to their respective team
      */
-    private void tpToPrep() {
+    private void initialPrep() {
         for (Brawler b : players.values()) {
             b.isAlive = true;
             if (b.getTeam() == Teams.NONE) {
@@ -498,7 +607,6 @@ public class GameManager {
                 }
             }
             b.heal();
-
         }
 
         for (Brawler b : players.values()) {
@@ -527,11 +635,16 @@ public class GameManager {
     private void tpToArena() {
         for (Brawler b : players.values()) {
             if (b.getTeam() == Teams.RED) {
-                b.getPlayer().teleport(ValueHolder.red_spawn);
+                Location redTeam = ValueHolder.red_spawn;
+                redTeam.setZ(b.getPlayer().getLocation().getBlockZ());
+                b.getPlayer().teleport(redTeam);
             } else if (b.getTeam() == Teams.BLUE) {
-                b.getPlayer().teleport(ValueHolder.blue_spawn);
+                Location blueTeam = ValueHolder.blue_spawn;
+                blueTeam.setZ(b.getPlayer().getLocation().getBlockZ());
+                b.getPlayer().teleport(blueTeam);
             } else {
-                Bukkit.broadcastMessage(ValueHolder.tacc("ERROR CODE 002"));
+                b.getPlayer().teleport(ValueHolder.center);
+                System.out.println("ERROR CODE 002. This could also happen if an admin joins after the game has already started.");
             }
         }
     }
@@ -564,7 +677,7 @@ public class GameManager {
      */
     private void win(Teams team) {
 
-        preptime = 11;
+        preptime = 16;
         state = State.PREP;
         if (team == Teams.BLUE) {
             rounds.add(Teams.BLUE);
@@ -573,13 +686,13 @@ public class GameManager {
             resetBoard();
             score_blue++;
 //            }, 20);
-            MessageAPI.msgToAll(ValueHolder.prefix + "&9Team Blue &awins the round.");
+            MessageAPI.wonRound(Teams.BLUE);
         } else if (team == Teams.RED) {
             rounds.add(Teams.RED);
             tpToPrep();
             resetBoard();
             score_red++;
-            MessageAPI.msgToAll(ValueHolder.prefix + "&cTeam Red &awins the round.");
+            MessageAPI.wonRound(Teams.RED);
         }
 
         if (score_red == end_rounds || score_blue == end_rounds) {
@@ -588,16 +701,7 @@ public class GameManager {
         }
 
         MessageAPI.roundEndSound();
-
-        for (Brawler b : players.values()) {
-            if (b.getTeam() == team) {
-                b.addCoins(400);
-                ActionBarAPI.abToPlayer("&6+400$ &afor winning.", b.getPlayer());
-            } else {
-                ActionBarAPI.abToPlayer("&6+100$ &afor losing.", b.getPlayer());
-                b.addCoins(200);
-            }
-        }
+        MessageAPI.reward(team);
     }
 
     public void openTeamInv(Player p) {
@@ -620,9 +724,7 @@ public class GameManager {
      */
     public void start() {
         if (lobbyTime > 5) {
-            MessageAPI.msgToAll("");
-            MessageAPI.msgToAll("&cCountdown has been reduced to &e5s.");
-            MessageAPI.msgToAll("");
+            MessageAPI.counterReduced();
             this.lobbyTime = 5;
         }
     }
@@ -647,5 +749,6 @@ public class GameManager {
 
         return i;
     }
+
 
 }

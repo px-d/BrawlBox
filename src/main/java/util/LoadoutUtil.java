@@ -12,7 +12,7 @@ public class LoadoutUtil {
 
 
     public static void redLoadout(Player p) {
-        ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).flags(ItemFlag.HIDE_ATTRIBUTES).build();
+        ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).setCooldown(2.0D).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         ItemStack pick = new ItemBuilder(Material.IRON_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         pick.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
         pick.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);
@@ -49,7 +49,7 @@ public class LoadoutUtil {
     }
 
     public static void blueLoadout(Player p) {
-        ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).flags(ItemFlag.HIDE_ATTRIBUTES).build();
+        ItemStack sword = new ItemBuilder(Material.WOODEN_SWORD).setCooldown(2.0D).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         ItemStack pick = new ItemBuilder(Material.IRON_PICKAXE).flags(ItemFlag.HIDE_ATTRIBUTES).build();
         pick.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
         pick.addUnsafeEnchantment(Enchantment.DIG_SPEED, 1);

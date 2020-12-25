@@ -8,6 +8,7 @@ import main.BrawlBox;
 import main.GameManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +24,7 @@ import util.ActionBarAPI;
 import util.ValueHolder;
 
 public class GeneralEvents implements Listener {
+
 
     @EventHandler
     public void onPlace(BlockPlaceEvent e) {
@@ -45,8 +47,6 @@ public class GeneralEvents implements Listener {
         } else {
             BrawlBox.gm.placedBlocks.add(e.getBlock().getLocation());
         }
-
-
     }
 
     @EventHandler
@@ -109,12 +109,29 @@ public class GeneralEvents implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent e) {
-        if (e.getPlayer().getUniqueId().toString().equals("070220f3-40f1-4d51-a95d-c9f5ab21cc2e")) {
-            e.allow();
-        } else if (BrawlBox.gm.state != State.LOBBY) {
-            e.disallow(PlayerLoginEvent.Result.KICK_OTHER, "Game is already running.");
-            return;
+        if (BrawlBox.gm.state != State.LOBBY) {
+            if (e.getPlayer().isOp() || e.getPlayer().hasPermission("bb.spectate")) {
+                e.getPlayer().setGameMode(GameMode.SPECTATOR);
+                e.getPlayer().teleport(ValueHolder.center);
+                e.getPlayer().sendMessage(ValueHolder.tacc("&cYou joined the game as spectator because it was already running."));
+            } else {
+                e.disallow(PlayerLoginEvent.Result.KICK_FULL, "Game is already running.");
+            }
         }
+    }
+
+    @EventHandler
+    public void onEntityInteract(PlayerInteractAtEntityEvent e) {
+
+        if (BrawlBox.gm.state == State.PREP) {
+            if (e.getRightClicked().getType() == EntityType.VILLAGER) {
+                e.setCancelled(true);
+                ShopGUI.INVENTORY.open(e.getPlayer());
+                e.getPlayer().playSound(e.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.2f, 0.2f);
+            }
+        }
+
+
     }
 
     @EventHandler
@@ -135,18 +152,9 @@ public class GeneralEvents implements Listener {
                 }
             }
         }
-
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             if (e.getClickedBlock() == null) {
                 return;
-            }
-            if (e.getClickedBlock().getType() == Material.END_PORTAL_FRAME && BrawlBox.gm.state == State.PREP) {
-//                if (e.getPlayer().getInventory().getItemInMainHand() != null) {
-                if (e.getPlayer().getInventory().getItemInMainHand().getType() != Material.BOW) {
-                    ShopGUI.INVENTORY.open(e.getPlayer());
-                    e.getPlayer().playSound(e.getClickedBlock().getLocation(), Sound.BLOCK_ENDER_CHEST_OPEN, 0.2f, 1f);
-                }
-//                }
             }
             if (e.getClickedBlock().getType() == Material.ANVIL) {
                 e.setCancelled(true);
@@ -182,50 +190,43 @@ public class GeneralEvents implements Listener {
         if (e.getSlot() == 40) {
             e.setCancelled(true);
         }
-        if (e.getCurrentItem() != null && e.getWhoClicked() instanceof Player) {
-            if (e.getCurrentItem().getType() == Material.NETHER_STAR) {
+        if (BrawlBox.gm.state == State.PREP) {
+            if (e.getClick() == ClickType.NUMBER_KEY) {
                 e.setCancelled(true);
-                if (e.getClick().isRightClick()) {
-                    BrawlBox.gm.openTeamInv((Player) e.getWhoClicked());
-                }
-
             }
-
         }
 
-//        if (e.getCurrentItem() != null) {
-//            if (e.getCurrentItem().getType() == Material.NETHER_STAR) {
-//                e.setCancelled(true);
-//            }
-//        }
+        if (e.getCurrentItem() != null) {
 
-        if (!e.isCancelled()) {
-            if (BrawlBox.gm.state == State.LOBBY && e.getWhoClicked().getGameMode() != GameMode.CREATIVE) {
+            if (e.getCurrentItem().getType().toString().toLowerCase().contains("helm") || e.getCurrentItem().getType().toString().toLowerCase().contains("boots") || e.getCurrentItem().getType().toString().toLowerCase().contains("leggings")) {
                 e.setCancelled(true);
             }
 
-            if (e.getCurrentItem().getType().toString().contains("SWORD") && e.getClick() == ClickType.NUMBER_KEY) {
+            if (BrawlBox.gm.state == State.LOBBY) {
                 e.setCancelled(true);
             }
 
+            if (BrawlBox.gm.state == State.PREP) {
 
-            if (e.getInventory() == GameManager.blue_inv || e.getInventory() == GameManager.red_inv) {
-                if (e.getClick() == ClickType.NUMBER_KEY) {
-                    e.setCancelled(true);
-                    return;
-                }
-                if (e.getCurrentItem() != null) {
-                    if (e.getCurrentItem().getType().toString().contains("SWORD") || e.getCurrentItem().getType().toString().contains("PICKAXE") || e.getCurrentItem().getType() == Material.NETHER_STAR || e.getCurrentItem().getType().toString().contains("CONCRETE") || e.getCurrentItem().getType() == Material.LEATHER_CHESTPLATE) {
+                if (e.getInventory() == GameManager.blue_inv || e.getInventory() == GameManager.red_inv) {
+                    if (e.getCurrentItem().getType().toString().toLowerCase().contains("concrete") || e.getCurrentItem().getType().toString().toLowerCase().contains("pickaxe")) {
                         e.setCancelled(true);
                     }
                 }
-            }
 
-            if (e.getCurrentItem() != null && BrawlBox.gm.state == State.PREP) {
-                if (e.getCurrentItem().getType().toString().contains("LEGGINGS") || e.getCurrentItem().getType().toString().contains("BOOTS") || e.getCurrentItem().getType().toString().contains("HELMET") || e.getCurrentItem().getType().toString().contains("SWORD") || e.getCurrentItem().getType() == Material.NETHER_STAR) {
+                if (e.getCurrentItem().getType().toString().toLowerCase().contains("sword")) {
                     e.setCancelled(true);
+                    return;
                 }
             }
+
+            if (e.getCurrentItem().getType() == Material.NETHER_STAR) {
+                if (e.getClick() == ClickType.RIGHT) {
+                    BrawlBox.gm.openTeamInv((Player) e.getWhoClicked());
+                }
+                e.setCancelled(true);
+            }
+
 
         }
     }
@@ -240,8 +241,10 @@ public class GeneralEvents implements Listener {
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
         if (e.getPlayer().getLocation().getBlock().getType() == Material.WATER) {
-            Brawler b = BrawlBox.gm.players.get(e.getPlayer().getUniqueId());
-            b.kill();
+            if (BrawlBox.gm.players.containsKey(e.getPlayer().getUniqueId())) {
+                Brawler b = BrawlBox.gm.players.get(e.getPlayer().getUniqueId());
+                b.kill();
+            }
         }
     }
 

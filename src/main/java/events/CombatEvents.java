@@ -1,6 +1,7 @@
 package events;
 
 import crucial.Brawler;
+import enums.Lang;
 import enums.State;
 import enums.Teams;
 import main.BrawlBox;
@@ -19,7 +20,7 @@ public class CombatEvents implements Listener {
     @EventHandler
     public void onHit(EntityDamageByEntityEvent e) {
 
-        if(e.getEntity() instanceof Player && e.getDamager() instanceof Arrow){
+        if (e.getEntity() instanceof Player && e.getDamager() instanceof Arrow) {
             e.getDamager().remove();
             e.setCancelled(true);
         }
@@ -30,7 +31,7 @@ public class CombatEvents implements Listener {
 
             if (hitter.getTeam() == victim.getTeam() && BrawlBox.gm.state != State.LOBBY) {
                 e.setCancelled(true);
-                ActionBarAPI.abToPlayer(ValueHolder.tacc("&cDon't hurt your teammates :("),hitter.getPlayer());
+                ActionBarAPI.abToPlayer(ValueHolder.tacc("&cDon't hurt your teammates :("), hitter.getPlayer());
             }
 
             if (((Player) e.getDamager()).getInventory().getItemInMainHand().getType().toString().contains("AXE")) {
@@ -45,8 +46,13 @@ public class CombatEvents implements Listener {
 
                 hitter.addKill();
                 //REWARDS
-                ActionBarAPI.abToPlayer("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)",hitter.getPlayer());
-//                hitter.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)"));
+
+                if (hitter.lang == Lang.EN) {
+                    ActionBarAPI.abToPlayer("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)", hitter.getPlayer());
+                } else {
+                    ActionBarAPI.abToPlayer("&aDu hast &e" + victim.getPlayer().getName() + "&a get\u00f6tet. &7(+200$)", hitter.getPlayer());
+                }
+
                 hitter.addCoins(200);
                 if (victim.getTeam() == Teams.BLUE) {
                     victim.getPlayer().teleport(ValueHolder.blue_prep);
@@ -72,9 +78,15 @@ public class CombatEvents implements Listener {
             victim.kill();
 
             //REWARDS
-            killer.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)"));
+
+            if (killer.lang == Lang.EN) {
+                killer.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aYou killed &e" + victim.getPlayer().getName() + " &7(+200$)"));
+            } else {
+                killer.getPlayer().sendMessage(ValueHolder.prefix + ValueHolder.tacc("&aDu hast &e" + victim.getPlayer().getName() + "&a get\u00f6tet. &7(+200$)"));
+            }
             killer.addCoins(200);
-            killer.getPlayer().playSound(killer.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f,1f);
+            killer.getPlayer().playSound(killer.getPlayer().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1f, 1f);
+
 
             e.getEntity().spigot().respawn();
 
